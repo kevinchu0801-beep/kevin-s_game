@@ -42,12 +42,12 @@ button {
   z-index: 1;
   width: min(900px, calc(100vw - 24px));
   margin: 0 auto;
-  padding: 20px 0 28px;
+  padding: 60px 0 28px;
 }
 
 .back-btn {
   position: absolute;
-  top: 20px;
+  top: 12px;
   left: 6px;
   padding: 8px 16px;
   background: rgba(103, 232, 249, 0.1);

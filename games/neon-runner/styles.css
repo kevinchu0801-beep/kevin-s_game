@@ -47,7 +47,7 @@ button {
 .back-btn {
   position: absolute;
   top: 12px;
-  right: 6px;
+  left: 6px;
   padding: 8px 16px;
   background: rgba(103, 232, 249, 0.1);
   border: 1px solid rgba(103, 232, 249, 0.2);
@@ -61,7 +61,7 @@ button {
 
 .back-btn:hover {
   background: rgba(103, 232, 249, 0.2);
-  transform: translateX(2px);
+  transform: translateX(-2px);
 }
 
 .hud {
