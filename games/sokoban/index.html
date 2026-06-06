@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>推箱子 - Kevin's Game Hub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='../../index.html'">← 返回首页</button>
+  
+  <div class="game-container">
+    <h1 class="game-title">推箱子</h1>
+    
+    <div class="level-select">
+      <span>关卡选择:</span>
+      <button class="level-btn" onclick="selectLevel(0)">1</button>
+      <button class="level-btn" onclick="selectLevel(1)">2</button>
+      <button class="level-btn" onclick="selectLevel(2)">3</button>
+      <button class="level-btn" onclick="selectLevel(3)">4</button>
+      <button class="level-btn" onclick="selectLevel(4)">5</button>
+    </div>
+    
+    <div class="game-info">
+      <span>步数: <span id="steps">0</span></span>
+      <button class="restart-btn" onclick="restartLevel()">重新开始</button>
+    </div>
+    
+    <div id="gameBoard" class="game-board"></div>
+    
+    <div class="instructions">
+      <p>使用 <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动</p>
+      <p>将所有箱子推到目标位置</p>
+    </div>
+    
+    <div id="winMessage" class="win-message hidden">
+      <h2>🎉 恭喜过关！</h2>
+      <p>你用了 <span id="finalSteps">0</span> 步完成本关</p>
+      <button onclick="nextLevel()">下一关 →</button>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
