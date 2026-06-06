@@ -31,285 +31,206 @@ body {
   overflow-x: hidden;
 }
 
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
 .shell {
   position: relative;
   z-index: 1;
-  width: min(1120px, calc(100vw - 24px));
+  width: min(1200px, calc(100vw - 24px));
   margin: 0 auto;
-  padding: 20px 0 28px;
+  padding: 40px 20px;
 }
 
-.hud {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 6px 18px;
+/* Hero Section */
+.hero {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 40px 20px;
 }
 
 .eyebrow {
-  margin: 0 0 10px;
+  margin: 0 0 20px;
   color: var(--accent);
   font-family: "Press Start 2P", monospace;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-h1,
-h2,
-p {
-  margin: 0;
-}
-
 h1 {
+  margin: 0 0 20px;
   font-family: "Press Start 2P", monospace;
-  font-size: clamp(1.25rem, 3vw, 2.2rem);
-  line-height: 1.3;
-  text-shadow: 0 0 18px rgba(103, 232, 249, 0.2);
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  line-height: 1.4;
+  text-shadow: 0 0 30px rgba(103, 232, 249, 0.3);
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(92px, 1fr));
-  gap: 10px;
-}
-
-.stat {
-  padding: 12px 14px;
-  border: 1px solid rgba(103, 232, 249, 0.15);
-  border-radius: 16px;
-  background: rgba(8, 14, 23, 0.62);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
-  text-align: right;
-}
-
-.stat span {
-  display: block;
-  margin-bottom: 6px;
+.subtitle {
+  margin: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
 }
 
-.stat strong {
-  font-size: 1.4rem;
-  letter-spacing: 0.02em;
+/* Games Grid */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
 }
 
-.stage {
+/* Game Card */
+.game-card {
   position: relative;
-  min-height: min(72vh, 820px);
-  border: 1px solid rgba(103, 232, 249, 0.2);
-  border-radius: 28px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(244, 114, 182, 0.12), transparent 22%),
-    radial-gradient(circle at 80% 20%, rgba(103, 232, 249, 0.1), transparent 24%),
-    linear-gradient(180deg, rgba(13, 27, 45, 0.95), rgba(6, 11, 20, 0.98));
-  box-shadow: var(--shadow);
-}
-
-#game-canvas {
-  display: block;
-  width: 100%;
-  height: min(72vh, 820px);
-  touch-action: none;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 180ms ease;
-  background: linear-gradient(180deg, rgba(4, 10, 18, 0.2), rgba(4, 10, 18, 0.6));
-}
-
-.overlay-visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.glass {
-  border: 1px solid var(--panel-border);
-  border-radius: 24px;
-  background: var(--panel);
-  backdrop-filter: blur(14px);
-  box-shadow: var(--shadow);
-}
-
-.panel {
-  width: min(520px, 100%);
-  padding: 28px;
-}
-
-.panel-tag {
-  display: inline-block;
-  margin-bottom: 14px;
-  color: var(--accent);
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-}
-
-.panel-tag.danger {
-  color: var(--danger);
-}
-
-.panel h2 {
-  font-size: clamp(1.4rem, 4vw, 2.2rem);
-  line-height: 1.2;
-}
-
-.panel-copy {
-  margin-top: 14px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.panel-copy code {
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text);
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.74em;
-}
-
-.panel-actions {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px solid rgba(103, 232, 249, 0.15);
+  border-radius: 24px;
+  background: rgba(10, 17, 29, 0.8);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent);
+  box-shadow:
+    var(--shadow),
+    0 0 30px rgba(103, 232, 249, 0.15);
+}
+
+.game-card:hover .play-btn {
+  color: var(--accent);
+}
+
+.game-card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+.card-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.game-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.game-card p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.card-tags {
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 22px;
+  margin-bottom: 20px;
 }
 
-.primary,
-.secondary {
-  border: 0;
+.tag {
+  padding: 4px 12px;
+  border: 1px solid rgba(103, 232, 249, 0.2);
   border-radius: 999px;
-  padding: 13px 18px;
-  transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    background 140ms ease;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-.primary {
-  color: #04111b;
-  background: linear-gradient(135deg, #7dd3fc, #c4b5fd);
-  box-shadow: 0 12px 28px rgba(103, 232, 249, 0.22);
+.play-btn {
+  color: var(--muted);
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-.secondary {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Coming Soon Card */
+.coming-soon {
+  opacity: 0.6;
+  cursor: default;
 }
 
-.primary:hover,
-.secondary:hover {
-  transform: translateY(-1px);
+.coming-soon:hover {
+  transform: none;
+  border-color: rgba(103, 232, 249, 0.15);
+  box-shadow: var(--shadow);
 }
 
-.mobile-tip {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  padding: 10px 14px;
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  border-top: 1px solid rgba(103, 232, 249, 0.1);
+}
+
+.footer p {
+  margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.footer-hints {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 14px;
-  padding: 14px 16px;
-  color: var(--muted);
+/* Responsive */
+@media (max-width: 768px) {
+  .shell {
+    padding: 20px 12px;
+  }
+
+  .hero {
+    margin-bottom: 40px;
+    padding: 30px 10px;
+  }
+
+  .games-grid {
+    gap: 20px;
+  }
+
+  .game-card {
+    padding: 24px;
+  }
+
+  .card-icon {
+    font-size: 3rem;
+  }
 }
 
+/* Background Effects */
 .bg-orb {
   position: fixed;
-  z-index: 0;
   border-radius: 50%;
-  filter: blur(16px);
-  opacity: 0.8;
   pointer-events: none;
+  z-index: 0;
 }
 
 .orb-a {
-  top: -80px;
-  right: -40px;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(244, 114, 182, 0.35), rgba(244, 114, 182, 0.05) 65%, transparent 100%);
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(103, 232, 249, 0.12), transparent 70%);
 }
 
 .orb-b {
-  left: -80px;
-  bottom: -90px;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(103, 232, 249, 0.26), rgba(103, 232, 249, 0.05) 66%, transparent 100%);
+  bottom: -20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.1), transparent 70%);
 }
 
 .bg-grid {
   position: fixed;
   inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.18;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
-}
-
-@media (max-width: 780px) {
-  .hud {
-    display: block;
-  }
-
-  .stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: 14px;
-  }
-
-  .footer-hints {
-    grid-template-columns: 1fr;
-  }
-
-  .panel {
-    padding: 22px;
-  }
-}
-
-@media (max-width: 560px) {
-  .shell {
-    width: min(100vw - 16px, 1120px);
-    padding-top: 12px;
-  }
-
-  .stats {
-    gap: 8px;
-  }
-
-  .stat {
-    padding: 10px 12px;
-  }
-
-  .mobile-tip {
-    font-size: 0.78rem;
-  }
+    linear-gradient(rgba(103, 232, 249, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
 }

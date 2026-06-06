@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>霓虹街机跑酷</title>
+    <title>Kevin's Game Hub - 游戏集合</title>
     <meta
       name="description"
-      content="一款轻量的网页小游戏：躲避障碍、收集金币、挑战最高分。"
+      content="探索多种好玩的小游戏，挑战自我，享受快乐时光。"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,8 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
-    <script defer src="./main.js"></script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -23,70 +22,51 @@
     <div class="bg-grid"></div>
 
     <main class="shell">
-      <section class="hud">
-        <div>
-          <p class="eyebrow">Neon Arcade Runner</p>
-          <h1>霓虹街机跑酷</h1>
-        </div>
+      <header class="hero">
+        <p class="eyebrow">Kevin's Game Collection</p>
+        <h1>🎮 游戏集合</h1>
+        <p class="subtitle">探索精彩小游戏，挑战无限可能</p>
+      </header>
 
-        <div class="stats">
-          <div class="stat">
-            <span>分数</span>
-            <strong id="score">0</strong>
+      <section class="games-grid">
+        <!-- 霓虹跑酷 -->
+        <a href="games/neon-runner/index.html" class="game-card">
+          <div class="card-icon">🏃‍♂️</div>
+          <h2>霓虹街机跑酷</h2>
+          <p>躲避障碍，收集金币，挑战最高分！</p>
+          <div class="card-tags">
+            <span class="tag">跑酷</span>
+            <span class="tag">挑战</span>
           </div>
-          <div class="stat">
-            <span>最高分</span>
-            <strong id="best-score">0</strong>
+          <span class="play-btn">开始游戏 →</span>
+        </a>
+
+        <!-- 记忆配对 -->
+        <a href="games/memory-match/index.html" class="game-card">
+          <div class="card-icon">🧠</div>
+          <h2>记忆卡片配对</h2>
+          <p>翻转卡片，寻找相同的图案，考验你的记忆力！</p>
+          <div class="card-tags">
+            <span class="tag">记忆</span>
+            <span class="tag">益智</span>
           </div>
-          <div class="stat">
-            <span>连击</span>
-            <strong id="combo">x1</strong>
+          <span class="play-btn">开始游戏 →</span>
+        </a>
+
+        <!-- 更多游戏占位 -->
+        <div class="game-card coming-soon">
+          <div class="card-icon">🎯</div>
+          <h2>即将推出</h2>
+          <p>更多精彩游戏正在开发中，敬请期待！</p>
+          <div class="card-tags">
+            <span class="tag">敬请期待</span>
           </div>
         </div>
       </section>
 
-      <section class="stage">
-        <canvas id="game-canvas" aria-label="霓虹街机跑酷游戏画布"></canvas>
-
-        <div class="overlay overlay-visible" id="start-screen">
-          <div class="panel glass">
-            <p class="panel-tag">MVP 模式</p>
-            <h2>躲开障碍，吃满金币，撑到最后。</h2>
-            <p class="panel-copy">
-              键盘用 <code>A/D</code> 或方向键左右移动。手机上直接拖动角色。
-              护盾能挡一次撞击，连续吃金币会提升连击分。
-            </p>
-            <div class="panel-actions">
-              <button class="primary" id="start-button">开始游戏</button>
-              <button class="secondary" id="mute-button" type="button">音效：关</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="overlay" id="game-over-screen">
-          <div class="panel glass">
-            <p class="panel-tag danger">游戏结束</p>
-            <h2>这局结束得很快，再来一次。</h2>
-            <p class="panel-copy">
-              你这局拿到了 <span id="final-score">0</span> 分，最高分仍然是
-              <span id="final-best">0</span> 分。
-            </p>
-            <div class="panel-actions">
-              <button class="primary" id="restart-button">再来一局</button>
-              <button class="secondary" id="back-button" type="button">返回说明</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mobile-tip glass">
-          触屏拖动左右移动，点击顶部可暂停
-        </div>
-      </section>
-
-      <section class="footer-hints glass">
-        <div>操作：A / D、方向键、拖动触屏</div>
-        <div>目标：活久一点，顺便刷新最高分</div>
-      </section>
+      <footer class="footer">
+        <p>© 2024 Kevin's Game Hub · 用 ❤️ 和代码构建</p>
+      </footer>
     </main>
   </body>
 </html>

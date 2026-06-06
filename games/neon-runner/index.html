@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>霓虹街机跑酷</title>
+    <meta
+      name="description"
+      content="一款轻量的网页小游戏：躲避障碍、收集金币、挑战最高分。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./main.js"></script>
+  </head>
+  <body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-grid"></div>
+
+    <main class="shell">
+      <a href="../../index.html" class="back-btn">← 返回首页</a>
+      <section class="hud">
+        <div>
+          <p class="eyebrow">Neon Arcade Runner</p>
+          <h1>霓虹街机跑酷</h1>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>分数</span>
+            <strong id="score">0</strong>
+          </div>
+          <div class="stat">
+            <span>最高分</span>
+            <strong id="best-score">0</strong>
+          </div>
+          <div class="stat">
+            <span>连击</span>
+            <strong id="combo">x1</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage">
+        <canvas id="game-canvas" aria-label="霓虹街机跑酷游戏画布"></canvas>
+
+        <div class="overlay overlay-visible" id="start-screen">
+          <div class="panel glass">
+            <p class="panel-tag">MVP 模式</p>
+            <h2>躲开障碍，吃满金币，撑到最后。</h2>
+            <p class="panel-copy">
+              键盘用 <code>A/D</code> 或方向键左右移动。手机上直接拖动角色。
+              护盾能挡一次撞击，连续吃金币会提升连击分。
+            </p>
+            <div class="panel-actions">
+              <button class="primary" id="start-button">开始游戏</button>
+              <button class="secondary" id="mute-button" type="button">音效：关</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay" id="game-over-screen">
+          <div class="panel glass">
+            <p class="panel-tag danger">游戏结束</p>
+            <h2>这局结束得很快，再来一次。</h2>
+            <p class="panel-copy">
+              你这局拿到了 <span id="final-score">0</span> 分，最高分仍然是
+              <span id="final-best">0</span> 分。
+            </p>
+            <div class="panel-actions">
+              <button class="primary" id="restart-button">再来一局</button>
+              <button class="secondary" id="back-button" type="button">返回说明</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-tip glass">
+          触屏拖动左右移动，点击顶部可暂停
+        </div>
+      </section>
+
+      <section class="footer-hints glass">
+        <div>操作：A / D、方向键、拖动触屏</div>
+        <div>目标：活久一点，顺便刷新最高分</div>
+      </section>
+    </main>
+  </body>
+</html>
