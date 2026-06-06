@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/games/:game/*",
+      "destination": "/games/:game/index.html"
+    }
+  ],
+  "trailingSlash": false
+}
