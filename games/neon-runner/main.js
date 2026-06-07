@@ -12,6 +12,7 @@ const startButton = document.getElementById("start-button");
 const restartButton = document.getElementById("restart-button");
 const backButton = document.getElementById("back-button");
 const muteButton = document.getElementById("mute-button");
+const pauseButton = document.getElementById("pause-button");
 const startCopyHtml =
   "键盘用 <code>A/D</code> 或方向键左右移动。手机上直接拖动角色。<br />护盾能挡一次撞击，连续吃金币会提升连击分。";
 const pauseCopyText = "游戏已暂停。继续后会从当前进度恢复。";
@@ -242,10 +243,16 @@ function restoreStartCopy() {
   startCopyEl.innerHTML = startCopyHtml;
 }
 
+function setPauseButton(label, isDisabled = false) {
+  pauseButton.textContent = label;
+  pauseButton.disabled = isDisabled;
+}
+
 function startGame() {
   if (!isRunning) {
     resetGame();
     isRunning = true;
+    setPauseButton("暂停", false);
     startScreen.classList.remove("overlay-visible");
     gameOverScreen.classList.remove("overlay-visible");
     lastTimestamp = performance.now();
@@ -254,6 +261,7 @@ function startGame() {
   }
 
   isRunning = true;
+  setPauseButton("暂停", false);
   startScreen.classList.remove("overlay-visible");
   gameOverScreen.classList.remove("overlay-visible");
   lastTimestamp = performance.now();
@@ -263,6 +271,7 @@ function startGame() {
 function finishGame() {
   isRunning = false;
   cancelAnimationFrame(animationId);
+  setPauseButton("暂停", true);
   bestScore = Math.max(bestScore, Math.floor(score));
   writeStoredBestScore(bestScore);
   finalScoreEl.textContent = String(Math.floor(score));
@@ -520,26 +529,25 @@ function update(dt) {
 
 function drawBackground() {
   const background = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
-  background.addColorStop(0, "#0d1b2d");
-  background.addColorStop(1, "#050910");
+  background.addColorStop(0, "#bdefff");
+  background.addColorStop(0.58, "#f6f7ff");
+  background.addColorStop(1, "#fff2b8");
   ctx.fillStyle = background;
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
   ctx.save();
   for (const star of state.stars) {
-    ctx.globalAlpha = star.alpha * 0.18;
-    ctx.fillStyle = "#d9f7ff";
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.globalAlpha = star.alpha * 0.42;
+    ctx.fillStyle = star.speed > 50 ? "#ff7a7a" : "#5a8cff";
+    ctx.fillRect(star.x, star.y, star.radius * 2.2, star.radius * 2.2);
   }
   ctx.globalAlpha = 1;
   ctx.restore();
 
   const laneHeight = GAME_HEIGHT / 8;
   ctx.save();
-  ctx.strokeStyle = "rgba(103, 232, 249, 0.08)";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(36, 48, 68, 0.16)";
+  ctx.lineWidth = 2;
   for (let row = 1; row < 8; row += 1) {
     const y = row * laneHeight;
     ctx.beginPath();
@@ -562,7 +570,7 @@ function drawPlayer() {
   }
 
   ctx.shadowColor = flash ? "#67e8f9" : "rgba(103, 232, 249, 0.45)";
-  ctx.shadowBlur = 24;
+  ctx.shadowBlur = 10;
 
   const gradient = ctx.createRadialGradient(x - 6, y - 8, 4, x, y, radius + 16);
   gradient.addColorStop(0, flash ? "#ffffff" : "#7dd3fc");
@@ -580,8 +588,8 @@ function drawPlayer() {
   ctx.fill();
 
   if (state.player.shield > 0) {
-    ctx.strokeStyle = "rgba(103, 232, 249, 0.8)";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#243044";
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(x, y, radius + 11 + Math.sin(performance.now() / 120) * 1.4, 0, Math.PI * 2);
     ctx.stroke();
@@ -595,26 +603,30 @@ function drawObstacle(obstacle) {
 
   ctx.save();
   ctx.translate(x, y);
-  ctx.shadowColor = "rgba(251, 113, 133, 0.42)";
-  ctx.shadowBlur = 18;
+  ctx.shadowColor = "rgba(36, 48, 68, 0.35)";
+  ctx.shadowBlur = 4;
+  ctx.strokeStyle = "#243044";
+  ctx.lineWidth = 4;
 
   if (type === "spike") {
-    ctx.fillStyle = "#fb7185";
+    ctx.fillStyle = "#ff7a7a";
     ctx.beginPath();
     ctx.moveTo(0, -size * 0.7);
     ctx.lineTo(size * 0.56, size * 0.5);
     ctx.lineTo(-size * 0.56, size * 0.5);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
   } else {
     const gradient = ctx.createLinearGradient(-size, -size, size, size);
-    gradient.addColorStop(0, "#1f2a44");
-    gradient.addColorStop(0.55, "#fb7185");
-    gradient.addColorStop(1, "#7c2d12");
+    gradient.addColorStop(0, "#fff7e8");
+    gradient.addColorStop(0.5, "#ff7a7a");
+    gradient.addColorStop(1, "#ffd166");
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.roundRect(-size * 0.5, -size * 0.5, size, size, 8);
     ctx.fill();
+    ctx.stroke();
   }
 
   ctx.restore();
@@ -623,12 +635,15 @@ function drawObstacle(obstacle) {
 function drawCoin(coin) {
   ctx.save();
   ctx.translate(coin.x, coin.y);
-  ctx.shadowColor = "rgba(248, 225, 108, 0.55)";
-  ctx.shadowBlur = 14;
-  ctx.fillStyle = "#f8e16c";
+  ctx.shadowColor = "rgba(36, 48, 68, 0.28)";
+  ctx.shadowBlur = 4;
+  ctx.fillStyle = "#ffd166";
   ctx.beginPath();
   ctx.arc(0, 0, coin.size, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = "#243044";
+  ctx.lineWidth = 3;
+  ctx.stroke();
   ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
   ctx.beginPath();
   ctx.arc(-3, -3, 3.5, 0, Math.PI * 2);
@@ -643,17 +658,17 @@ function drawPowerup(powerup) {
   ctx.scale(pulse, pulse);
 
   const color = powerup.type === "shield" ? "#67e8f9" : "#f472b6";
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 18;
-  ctx.strokeStyle = color;
-  ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.shadowColor = "rgba(36, 48, 68, 0.3)";
+  ctx.shadowBlur = 4;
+  ctx.strokeStyle = "#243044";
+  ctx.fillStyle = color;
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.arc(0, 0, powerup.radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = color;
+  ctx.fillStyle = "#243044";
   ctx.font = "bold 16px Space Grotesk, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -675,10 +690,16 @@ function drawParticles() {
 
 function drawTopBanner() {
   ctx.save();
-  ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+  ctx.fillStyle = "rgba(255, 247, 232, 0.92)";
   ctx.fillRect(0, 0, GAME_WIDTH, 48);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.28)";
-  ctx.font = '500 12px "Space Grotesk", sans-serif';
+  ctx.strokeStyle = "#243044";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, 48);
+  ctx.lineTo(GAME_WIDTH, 48);
+  ctx.stroke();
+  ctx.fillStyle = "#243044";
+  ctx.font = '700 13px "Space Grotesk", sans-serif';
   ctx.textBaseline = "middle";
   ctx.fillText("点击顶部或按 P 可暂停 / 继续", 18, 24);
   ctx.restore();
@@ -727,6 +748,7 @@ function togglePause() {
   if (!isRunning) return;
   isRunning = false;
   cancelAnimationFrame(animationId);
+  setPauseButton("继续", false);
   startScreen.classList.add("overlay-visible");
   startButton.textContent = "继续游戏";
   startCopyEl.textContent = pauseCopyText;
@@ -739,6 +761,7 @@ function resumeFromPause() {
   }
 
   isRunning = true;
+  setPauseButton("暂停", false);
   startScreen.classList.remove("overlay-visible");
   startButton.textContent = "开始游戏";
   restoreStartCopy();
@@ -844,6 +867,7 @@ restartButton.addEventListener("click", () => {
   ensureAudioContext();
   resetGame();
   isRunning = true;
+  setPauseButton("暂停", false);
   startScreen.classList.remove("overlay-visible");
   gameOverScreen.classList.remove("overlay-visible");
   lastTimestamp = performance.now();
@@ -854,6 +878,7 @@ backButton.addEventListener("click", () => {
   isRunning = false;
   cancelAnimationFrame(animationId);
   resetGame();
+  setPauseButton("暂停", true);
   startButton.textContent = "开始游戏";
   restoreStartCopy();
   gameOverScreen.classList.remove("overlay-visible");
@@ -864,7 +889,19 @@ muteButton.addEventListener("click", () => {
   setMutedState(!isMuted);
 });
 
+pauseButton.addEventListener("click", () => {
+  if (isRunning) {
+    togglePause();
+    return;
+  }
+
+  if (startScreen.classList.contains("overlay-visible")) {
+    resumeFromPause();
+  }
+});
+
 startScreen.classList.add("overlay-visible");
+setPauseButton("暂停", true);
 setMutedState(true);
 bestScoreEl.textContent = String(bestScore);
 resizeCanvas();

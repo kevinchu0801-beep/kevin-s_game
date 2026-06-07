@@ -1,45 +1,91 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>推箱子 - Kevin's Game Hub</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <button class="back-btn" onclick="window.location.href='../../index.html'">← 返回首页</button>
-  
-  <div class="game-container">
-    <h1 class="game-title">推箱子</h1>
-    
-    <div class="level-select">
-      <span>关卡选择:</span>
-      <button class="level-btn" onclick="selectLevel(0)">1</button>
-      <button class="level-btn" onclick="selectLevel(1)">2</button>
-      <button class="level-btn" onclick="selectLevel(2)">3</button>
-      <button class="level-btn" onclick="selectLevel(3)">4</button>
-      <button class="level-btn" onclick="selectLevel(4)">5</button>
-    </div>
-    
-    <div class="game-info">
-      <span>步数: <span id="steps">0</span></span>
-      <button class="restart-btn" onclick="restartLevel()">重新开始</button>
-    </div>
-    
-    <div id="gameBoard" class="game-board"></div>
-    
-    <div class="instructions">
-      <p>使用 <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动</p>
-      <p>将所有箱子推到目标位置</p>
-    </div>
-    
-    <div id="winMessage" class="win-message hidden">
-      <h2>🎉 恭喜过关！</h2>
-      <p>你用了 <span id="finalSteps">0</span> 步完成本关</p>
-      <button onclick="nextLevel()">下一关 →</button>
-    </div>
-  </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>推箱子 - Kevin's Game Hub</title>
+    <meta name="description" content="轻量网页推箱子，支持键盘和触屏方向键。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=20260607-4" />
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
 
-  <script src="main.js"></script>
-</body>
+    <main class="shell">
+      <a class="back-btn" href="../../index.html">返回首页</a>
+
+      <header class="game-header">
+        <div>
+          <p class="eyebrow">Sokoban</p>
+          <h1 class="game-title">推箱子</h1>
+        </div>
+        <div class="stats" aria-label="游戏状态">
+          <div class="stat">
+            <span>关卡</span>
+            <strong id="levelLabel">1/5</strong>
+          </div>
+          <div class="stat">
+            <span>步数</span>
+            <strong id="steps">0</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="control-panel">
+        <div class="level-select" aria-label="关卡选择">
+          <button class="level-btn" type="button" data-level="0">01</button>
+          <button class="level-btn" type="button" data-level="1">02</button>
+          <button class="level-btn" type="button" data-level="2">03</button>
+          <button class="level-btn" type="button" data-level="3">04</button>
+          <button class="level-btn" type="button" data-level="4">05</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn secondary" id="undoBtn" type="button">撤回</button>
+          <button class="btn primary" id="restartBtn" type="button">重开</button>
+        </div>
+      </section>
+
+      <section class="game-layout">
+        <div class="board-shell">
+          <div id="gameBoard" class="game-board" aria-label="推箱子棋盘"></div>
+        </div>
+
+        <aside class="side-panel">
+          <p class="status-text" id="statusText">把所有方块推到目标点</p>
+          <div class="legend" aria-label="图例">
+            <span><i class="legend-mark player-mark"></i>玩家</span>
+            <span><i class="legend-mark box-mark"></i>方块</span>
+            <span><i class="legend-mark target-mark"></i>目标</span>
+          </div>
+
+          <div class="touch-controls" aria-label="触屏方向控制">
+            <button class="dpad up" type="button" data-dx="0" data-dy="-1">上</button>
+            <button class="dpad left" type="button" data-dx="-1" data-dy="0">左</button>
+            <button class="dpad right" type="button" data-dx="1" data-dy="0">右</button>
+            <button class="dpad down" type="button" data-dx="0" data-dy="1">下</button>
+          </div>
+        </aside>
+      </section>
+
+      <div id="winMessage" class="overlay hidden">
+        <div class="win-panel">
+          <p class="panel-tag">关卡完成</p>
+          <h2>路线打通了</h2>
+          <p>你用了 <span id="finalSteps">0</span> 步完成本关。</p>
+          <div class="panel-actions">
+            <button class="btn secondary" id="winRestartBtn" type="button">重玩本关</button>
+            <button class="btn primary" id="nextLevelBtn" type="button">下一关</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="main.js?v=20260607-4"></script>
+  </body>
 </html>

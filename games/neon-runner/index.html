@@ -14,35 +14,36 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
-    <script defer src="./main.js"></script>
+    <link rel="stylesheet" href="./styles.css?v=20260607-4" />
+    <script defer src="./main.js?v=20260607-4"></script>
   </head>
   <body>
-    <div class="bg-orb orb-a"></div>
-    <div class="bg-orb orb-b"></div>
-    <div class="bg-grid"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
 
     <main class="shell">
-      <a href="../../index.html" class="back-btn">← 返回首页</a>
+      <a href="../../index.html" class="back-btn">返回首页</a>
       <section class="hud">
         <div>
           <p class="eyebrow">Neon Arcade Runner</p>
           <h1>霓虹街机跑酷</h1>
         </div>
 
-        <div class="stats">
-          <div class="stat">
-            <span>分数</span>
-            <strong id="score">0</strong>
+        <div class="hud-actions">
+          <div class="stats" aria-label="游戏状态">
+            <div class="stat">
+              <span>分数</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span>最高分</span>
+              <strong id="best-score">0</strong>
+            </div>
+            <div class="stat">
+              <span>连击</span>
+              <strong id="combo">x1</strong>
+            </div>
           </div>
-          <div class="stat">
-            <span>最高分</span>
-            <strong id="best-score">0</strong>
-          </div>
-          <div class="stat">
-            <span>连击</span>
-            <strong id="combo">x1</strong>
-          </div>
+          <button class="control-btn" id="pause-button" type="button" disabled>暂停</button>
         </div>
       </section>
 
@@ -51,8 +52,8 @@
 
         <div class="overlay overlay-visible" id="start-screen">
           <div class="panel glass">
-            <p class="panel-tag">MVP 模式</p>
-            <h2>躲开障碍，吃满金币，撑到最后。</h2>
+            <p class="panel-tag">Survival Run</p>
+            <h2>闪避障碍，保持连击。</h2>
             <p class="panel-copy">
               键盘用 <code>A/D</code> 或方向键左右移动。手机上直接拖动角色。
               护盾能挡一次撞击，连续吃金币会提升连击分。
@@ -67,9 +68,9 @@
         <div class="overlay" id="game-over-screen">
           <div class="panel glass">
             <p class="panel-tag danger">游戏结束</p>
-            <h2>这局结束得很快，再来一次。</h2>
+            <h2>差一点，再来一局。</h2>
             <p class="panel-copy">
-              你这局拿到了 <span id="final-score">0</span> 分，最高分仍然是
+              你这局拿到了 <span id="final-score">0</span> 分，最高分是
               <span id="final-best">0</span> 分。
             </p>
             <div class="panel-actions">
@@ -79,14 +80,12 @@
           </div>
         </div>
 
-        <div class="mobile-tip glass">
-          触屏拖动左右移动，点击顶部可暂停
-        </div>
+        <div class="mobile-tip glass">拖动角色移动，点击顶部暂停</div>
       </section>
 
-      <section class="footer-hints glass">
-        <div>操作：A / D、方向键、拖动触屏</div>
-        <div>目标：活久一点，顺便刷新最高分</div>
+      <section class="footer-hints glass" aria-label="操作提示">
+        <div>键盘：A / D 或方向键</div>
+        <div>目标：活得更久，维持连击</div>
       </section>
     </main>
   </body>

@@ -6,7 +6,7 @@
     <title>Kevin's Game Hub - 游戏集合</title>
     <meta
       name="description"
-      content="探索多种好玩的小游戏，挑战自我，享受快乐时光。"
+      content="探索多种轻量网页小游戏，挑战反应、记忆和策略。"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,60 +14,76 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260607-5" />
   </head>
   <body>
-    <div class="bg-orb orb-a"></div>
-    <div class="bg-orb orb-b"></div>
-    <div class="bg-grid"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
 
     <main class="shell">
       <header class="hero">
         <p class="eyebrow">Kevin's Game Collection</p>
-        <h1>🎮 游戏集合</h1>
-        <p class="subtitle">探索精彩小游戏，挑战无限可能</p>
+        <h1>Kevin's Game Hub</h1>
+        <p class="subtitle">反应、记忆、策略，三种小游戏随时开局。</p>
       </header>
 
-      <section class="games-grid">
-        <!-- 霓虹跑酷 -->
-        <a href="games/neon-runner/index.html" class="game-card">
-          <div class="card-icon">🏃‍♂️</div>
+      <section class="games-grid" aria-label="游戏列表">
+        <a href="games/neon-runner/index.html" class="game-card runner-card">
+          <div class="card-top">
+            <div class="card-mark" aria-hidden="true">NR</div>
+            <span class="card-type">Canvas</span>
+          </div>
           <h2>霓虹街机跑酷</h2>
-          <p>躲避障碍，收集金币，挑战最高分！</p>
+          <p>左右闪避障碍，连续收集金币，用护盾撑过更高速度。</p>
           <div class="card-tags">
             <span class="tag">跑酷</span>
-            <span class="tag">挑战</span>
+            <span class="tag">反应</span>
           </div>
-          <span class="play-btn">开始游戏 →</span>
+          <span class="play-btn">开始游戏</span>
         </a>
 
-        <!-- 记忆配对 -->
-        <a href="games/memory-match/index.html" class="game-card">
-          <div class="card-icon">🧠</div>
+        <a href="games/memory-match/index.html" class="game-card memory-card">
+          <div class="card-top">
+            <div class="card-mark" aria-hidden="true">MM</div>
+            <span class="card-type">Puzzle</span>
+          </div>
           <h2>记忆卡片配对</h2>
-          <p>翻转卡片，寻找相同的图案，考验你的记忆力！</p>
+          <p>观察几何图案的位置，用更少步数翻出全部配对。</p>
           <div class="card-tags">
             <span class="tag">记忆</span>
             <span class="tag">益智</span>
           </div>
-          <span class="play-btn">开始游戏 →</span>
+          <span class="play-btn">开始游戏</span>
         </a>
 
-        <!-- 推箱子 -->
-        <a href="games/sokoban/index.html" class="game-card">
-          <div class="card-icon">📦</div>
-          <h2>推箱子</h2>
-          <p>运用智慧，将箱子推到指定位置，挑战不同关卡！</p>
-          <div class="card-tags">
-            <span class="tag">益智</span>
-            <span class="tag">策略</span>
+        <a href="games/sokoban/index.html" class="game-card sokoban-card">
+          <div class="card-top">
+            <div class="card-mark" aria-hidden="true">SB</div>
+            <span class="card-type">Logic</span>
           </div>
-          <span class="play-btn">开始游戏 →</span>
+          <h2>推箱子</h2>
+          <p>规划移动路线，把所有方块推入目标点，步数越少越漂亮。</p>
+          <div class="card-tags">
+            <span class="tag">策略</span>
+            <span class="tag">关卡</span>
+          </div>
+          <span class="play-btn">开始游戏</span>
         </a>
       </section>
 
+      <section class="coming-soon-panel" aria-label="更多游戏更新提示">
+        <div class="coming-mark" aria-hidden="true">UP</div>
+        <div class="coming-copy">
+          <p class="coming-kicker">More Games Incoming</p>
+          <h2>敬请期待更多游戏</h2>
+          <p>
+            这个目录会持续更新。新的小游戏、关卡和玩法会陆续加入，
+            你可以把这里当成 Kevin's Game Hub 的长期入口。
+          </p>
+        </div>
+      </section>
+
       <footer class="footer">
-        <p>© 2024 Kevin's Game Hub · 用 ❤️ 和代码构建</p>
+        <p>Kevin's Game Hub · Built with HTML, CSS and JavaScript</p>
       </footer>
     </main>
   </body>
