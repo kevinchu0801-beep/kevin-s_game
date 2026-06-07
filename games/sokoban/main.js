@@ -54,16 +54,21 @@ const levelLabelEl = document.getElementById("levelLabel");
 const statusTextEl = document.getElementById("statusText");
 const winMessageEl = document.getElementById("winMessage");
 const finalStepsEl = document.getElementById("finalSteps");
+const soundBtn = document.getElementById("soundBtn");
 const undoBtn = document.getElementById("undoBtn");
 const restartBtn = document.getElementById("restartBtn");
 const winRestartBtn = document.getElementById("winRestartBtn");
 const nextLevelBtn = document.getElementById("nextLevelBtn");
+
+const AUDIO_KEY = "sokoban-audio-enabled";
 
 let currentLevel = 0;
 let gameMap = [];
 let playerPos = { x: 0, y: 0 };
 let steps = 0;
 let history = [];
+let audioCtx = null;
+let isMuted = readAudioSetting();
 
 function normalizeLevel(level) {
   const width = Math.max(...level.map((row) => row.length));
@@ -102,6 +107,72 @@ function setCell(x, y, value) {
 
 function updateStatus(message) {
   statusTextEl.textContent = message;
+}
+
+function readAudioSetting() {
+  try {
+    return window.localStorage.getItem(AUDIO_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+function writeAudioSetting() {
+  try {
+    window.localStorage.setItem(AUDIO_KEY, isMuted ? "0" : "1");
+  } catch {
+    // Ignore storage failures in restricted browsers or file:// contexts.
+  }
+}
+
+function ensureAudioContext() {
+  if (isMuted) return null;
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioCtx = new AudioContextClass();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+function playTone(frequency, duration, type = "sine", gain = 0.04, endFrequency = null) {
+  const context = ensureAudioContext();
+  if (!context) return;
+
+  const oscillator = context.createOscillator();
+  const volume = context.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+  if (endFrequency !== null) {
+    oscillator.frequency.exponentialRampToValueAtTime(endFrequency, context.currentTime + duration);
+  }
+  volume.gain.setValueAtTime(gain, context.currentTime);
+  volume.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
+  oscillator.connect(volume);
+  volume.connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + duration);
+}
+
+function playStepSound() {
+  playTone(480, 0.05, "triangle", 0.025, 620);
+}
+
+function playBlockedSound() {
+  playTone(180, 0.09, "square", 0.03, 150);
+}
+
+function playWinSound() {
+  playTone(523, 0.08, "sine", 0.035, 784);
+  window.setTimeout(() => playTone(659, 0.08, "sine", 0.03, 988), 80);
+}
+
+function setSoundButton() {
+  soundBtn.textContent = `音效：${isMuted ? "关" : "开"}`;
+  soundBtn.setAttribute("aria-pressed", String(!isMuted));
 }
 
 function updateHud() {
@@ -190,6 +261,7 @@ function movePlayer(dx, dy) {
 
   if (targetCell === "W") {
     updateStatus("这里被墙挡住了");
+    playBlockedSound();
     return;
   }
 
@@ -202,6 +274,7 @@ function movePlayer(dx, dy) {
 
     if (boxTargetCell === "W" || boxTargetCell === "$" || boxTargetCell === "*") {
       updateStatus("方块前面没有空间");
+      playBlockedSound();
       return;
     }
 
@@ -212,6 +285,7 @@ function movePlayer(dx, dy) {
   history.push(beforeMove);
   playerPos = { x: newX, y: newY };
   steps += 1;
+  playStepSound();
   updateStatus("继续规划下一步");
   updateHud();
   render();
@@ -222,6 +296,7 @@ function checkWin() {
   const hasUnplacedBox = gameMap.some((row) => row.includes("$"));
   if (hasUnplacedBox) return;
 
+  playWinSound();
   finalStepsEl.textContent = String(steps);
   updateStatus("关卡完成");
   winMessageEl.classList.remove("hidden");
@@ -256,6 +331,12 @@ function nextLevel() {
   updateStatus("全部关卡完成，已回到第一关");
 }
 
+function setMuted(nextMuted) {
+  isMuted = nextMuted;
+  writeAudioSetting();
+  setSoundButton();
+}
+
 document.querySelectorAll(".level-btn").forEach((button) => {
   button.addEventListener("click", () => {
     selectLevel(Number(button.dataset.level));
@@ -272,6 +353,7 @@ restartBtn.addEventListener("click", restartLevel);
 winRestartBtn.addEventListener("click", restartLevel);
 undoBtn.addEventListener("click", undoMove);
 nextLevelBtn.addEventListener("click", nextLevel);
+soundBtn.addEventListener("click", () => setMuted(!isMuted));
 
 document.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
@@ -305,3 +387,4 @@ document.addEventListener("keydown", (event) => {
 });
 
 loadLevel(0);
+setSoundButton();

@@ -154,6 +154,10 @@ h1 {
   justify-content: flex-end;
 }
 
+.controls .btn {
+  min-width: 66px;
+}
+
 .btn,
 .primary {
   min-height: 42px;

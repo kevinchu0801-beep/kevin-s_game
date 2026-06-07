@@ -12,12 +12,14 @@ const startButton = document.getElementById("start-button");
 const restartButton = document.getElementById("restart-button");
 const backButton = document.getElementById("back-button");
 const muteButton = document.getElementById("mute-button");
+const soundButton = document.getElementById("sound-button");
 const pauseButton = document.getElementById("pause-button");
 const startCopyHtml =
   "键盘用 <code>A/D</code> 或方向键左右移动。手机上直接拖动角色。<br />护盾能挡一次撞击，连续吃金币会提升连击分。";
 const pauseCopyText = "游戏已暂停。继续后会从当前进度恢复。";
 
 const BEST_SCORE_KEY = "neon-arcade-best-score";
+const AUDIO_KEY = "neon-arcade-audio-enabled";
 const GAME_WIDTH = 1024;
 const GAME_HEIGHT = 768;
 const PLAYER_RADIUS = 18;
@@ -28,7 +30,6 @@ const INITIAL_SPEED = 230;
 const GAME_DURATION = 90;
 
 let isRunning = false;
-let isMuted = true;
 let animationId = 0;
 let lastTimestamp = 0;
 let elapsed = 0;
@@ -37,6 +38,7 @@ let combo = 1;
 let bestScore = readStoredBestScore();
 let shakeTimer = 0;
 let audioCtx = null;
+let isMuted = readAudioSetting();
 
 const input = {
   left: false,
@@ -86,6 +88,22 @@ function readStoredBestScore() {
 function writeStoredBestScore(value) {
   try {
     window.localStorage.setItem(BEST_SCORE_KEY, String(value));
+  } catch {
+    // Ignore storage failures in restricted browsers or file:// contexts.
+  }
+}
+
+function readAudioSetting() {
+  try {
+    return window.localStorage.getItem(AUDIO_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+function writeAudioSetting() {
+  try {
+    window.localStorage.setItem(AUDIO_KEY, isMuted ? "0" : "1");
   } catch {
     // Ignore storage failures in restricted browsers or file:// contexts.
   }
@@ -246,6 +264,14 @@ function restoreStartCopy() {
 function setPauseButton(label, isDisabled = false) {
   pauseButton.textContent = label;
   pauseButton.disabled = isDisabled;
+}
+
+function setSoundButtons() {
+  const label = `音效：${isMuted ? "关" : "开"}`;
+  soundButton.textContent = label;
+  muteButton.textContent = label;
+  soundButton.setAttribute("aria-pressed", String(!isMuted));
+  muteButton.setAttribute("aria-pressed", String(!isMuted));
 }
 
 function startGame() {
@@ -771,7 +797,8 @@ function resumeFromPause() {
 
 function setMutedState(nextMuted) {
   isMuted = nextMuted;
-  muteButton.textContent = `音效：${isMuted ? "关" : "开"}`;
+  writeAudioSetting();
+  setSoundButtons();
 }
 
 function handlePointerMove(clientX, clientY) {
@@ -889,6 +916,10 @@ muteButton.addEventListener("click", () => {
   setMutedState(!isMuted);
 });
 
+soundButton.addEventListener("click", () => {
+  setMutedState(!isMuted);
+});
+
 pauseButton.addEventListener("click", () => {
   if (isRunning) {
     togglePause();
@@ -902,7 +933,8 @@ pauseButton.addEventListener("click", () => {
 
 startScreen.classList.add("overlay-visible");
 setPauseButton("暂停", true);
-setMutedState(true);
+setMutedState(isMuted);
+setSoundButtons();
 bestScoreEl.textContent = String(bestScore);
 resizeCanvas();
 spawnStarfield();

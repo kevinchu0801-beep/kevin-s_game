@@ -20,6 +20,7 @@ const timerEl = document.getElementById("timer");
 const restartBtn = document.getElementById("restart-btn");
 const newGameBtn = document.getElementById("new-game-btn");
 const peekBtn = document.getElementById("peek-btn");
+const soundBtn = document.getElementById("sound-btn");
 const playAgainBtn = document.getElementById("play-again-btn");
 const winScreen = document.getElementById("win-screen");
 const finalMovesEl = document.getElementById("final-moves");
@@ -27,6 +28,7 @@ const finalTimeEl = document.getElementById("final-time");
 const boardStatusEl = document.getElementById("board-status");
 
 const PAIRS_TO_MATCH = 8;
+const AUDIO_KEY = "memory-match-audio-enabled";
 
 let cards = [];
 let flippedCards = [];
@@ -36,6 +38,8 @@ let timer = 0;
 let timerInterval = null;
 let isLocked = false;
 let peekTimeout = 0;
+let audioCtx = null;
+let isMuted = readAudioSetting();
 
 function shuffle(array) {
   const arr = [...array];
@@ -50,6 +54,78 @@ function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function readAudioSetting() {
+  try {
+    return window.localStorage.getItem(AUDIO_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+function writeAudioSetting() {
+  try {
+    window.localStorage.setItem(AUDIO_KEY, isMuted ? "0" : "1");
+  } catch {
+    // Ignore storage failures in restricted browsers or file:// contexts.
+  }
+}
+
+function ensureAudioContext() {
+  if (isMuted) return null;
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioCtx = new AudioContextClass();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+function playTone(frequency, duration, type = "sine", gain = 0.04, endFrequency = null) {
+  const context = ensureAudioContext();
+  if (!context) return;
+
+  const oscillator = context.createOscillator();
+  const volume = context.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+  if (endFrequency !== null) {
+    oscillator.frequency.exponentialRampToValueAtTime(endFrequency, context.currentTime + duration);
+  }
+  volume.gain.setValueAtTime(gain, context.currentTime);
+  volume.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
+  oscillator.connect(volume);
+  volume.connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + duration);
+}
+
+function playFlipSound() {
+  playTone(560, 0.06, "triangle", 0.03, 760);
+}
+
+function playMatchSound() {
+  playTone(740, 0.08, "sine", 0.035, 1040);
+  window.setTimeout(() => playTone(880, 0.08, "sine", 0.03, 1174), 70);
+}
+
+function playMismatchSound() {
+  playTone(220, 0.12, "square", 0.035, 160);
+}
+
+function playWinSound() {
+  playTone(659, 0.08, "triangle", 0.03, 988);
+  window.setTimeout(() => playTone(784, 0.08, "triangle", 0.03, 1174), 90);
+  window.setTimeout(() => playTone(988, 0.12, "triangle", 0.03, 1318), 180);
+}
+
+function setSoundButton() {
+  soundBtn.textContent = `音效：${isMuted ? "关" : "开"}`;
+  soundBtn.setAttribute("aria-pressed", String(!isMuted));
 }
 
 function startTimer() {
@@ -106,6 +182,7 @@ function flipCard(card) {
   if (flippedCards.length >= 2) return;
 
   startTimer();
+  playFlipSound();
   card.classList.add("flipped");
   card.setAttribute("aria-pressed", "true");
   card.setAttribute("aria-label", `已翻开卡片 ${Number(card.dataset.index) + 1}`);
@@ -128,6 +205,7 @@ function checkMatch() {
     card2.classList.add("matched");
     card1.disabled = true;
     card2.disabled = true;
+    playMatchSound();
     matchedPairs += 1;
     updateStats();
     flippedCards = [];
@@ -142,6 +220,7 @@ function checkMatch() {
 
   card1.classList.add("mismatch");
   card2.classList.add("mismatch");
+  playMismatchSound();
   setBoardStatus("这两张不同，位置记一下");
 
   setTimeout(() => {
@@ -159,6 +238,7 @@ function checkMatch() {
 
 function showWinScreen() {
   stopTimer();
+  playWinSound();
   finalMovesEl.textContent = String(moves);
   finalTimeEl.textContent = formatTime(timer);
   setBoardStatus("全部配对完成");
@@ -195,6 +275,12 @@ function peekCards() {
   }, 1300);
 }
 
+function setMuted(nextMuted) {
+  isMuted = nextMuted;
+  writeAudioSetting();
+  setSoundButton();
+}
+
 function initGame() {
   stopTimer();
   window.clearTimeout(peekTimeout);
@@ -224,6 +310,8 @@ function initGame() {
 restartBtn.addEventListener("click", initGame);
 newGameBtn.addEventListener("click", initGame);
 peekBtn.addEventListener("click", peekCards);
+soundBtn.addEventListener("click", () => setMuted(!isMuted));
 playAgainBtn.addEventListener("click", initGame);
 
+setSoundButton();
 initGame();
